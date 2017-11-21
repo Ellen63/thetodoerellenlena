@@ -1,0 +1,17 @@
+{
+  "name": "thetodoer",
+  "version": "1.0.0",
+  "description": "simpleserver",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ellen",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "pg-promise": "^7.3.1"
+  }
+}
