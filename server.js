@@ -23,5 +23,5 @@ app.use('/TheToDoer/lists/', lists);
 // -------------------------------------
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
-    console.log('Server listening on port 3000!');
+    //console.log('Server listening on port 3000!');
 });
