@@ -8,17 +8,15 @@ app.use(function (req, res, next) {
     next(); //go to the specific route
 });
 
-// -------------------------------------
 //route handling is delegated to :
 var lists = require('./lists.js');
 app.use('/TheToDoer/lists/', lists);
 
-//var listitems = require('./listitems.js');
-//app.use('/TheToDoer/listitems/', listitems);
+var listitems = require('./listitems.js');
+app.use('/TheToDoer/listitems/', listitems);
 
-//Not yet implemented:
-//var users = require(1./users.js);
-//app.use('/TheToDoer/users/', users);
+var users = require('./users.js');
+app.use('/TheToDoer/users/', users);
 
 // -------------------------------------
 var port = process.env.PORT || 3000;
