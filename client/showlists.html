@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>showlists</title>
+    <script src="superfetch2.js"></script>
+</head>
+
+<body>
+
+    <ul>
+     <li><a href="createlist.html">Create list</a></li>
+     <li><a href="createlist_item.html">List items</a></li>
+     <li><a href="login.html">Login</a></li>
+     <li><a active="active"  href="showlists.html">Show lists</a></li>
+    </ul>
+
+    <input id="inpID" placeholder="List ID">
+    <button id="btnDelete">Delete list</button>
+    <div id="cont"></div>
+	<button id="signout">Sign out</button>
+</body>
+
+<script>
+
+    var inpID = document.getElementById("inpID");
+    var btnDelete = document.getElementById("btnDelete");
+    var cont = document.getElementById("cont");
+	var signout = document.getElementById("signout");
+
+   	refreshList();
+
+    //onclick delete list -------------------------------
+    btnDelete.onclick = function() {
+        var deleteList = {
+            method: "DELETE"
+        }
+
+        var token = JSON.parse(localStorage.getItem("logindata")).token;
+        //var url = "http://localhost:3000/TheToDoer/lists/?list_id=" + inpID.value + "&token=" + token;
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/lists/?list_id=" + inpID.value + "&token=" + token;
+        superfetch(url, "json", delSucc, error, deleteList);
+    }
+
+    //delete success -----------------------------------
+    function delSucc(data) {
+        console.log(data);
+        refreshList();
+    }
+
+    //success ------------------------------------------
+    function succ(data) {
+        cont.innerHTML = "";
+
+        for (var i = 0; i < data.length; i++){
+            var div = document.createElement("div");
+            div.innerHTML += "<h3>ID: " + data[i].list_id + "</h3>";
+            div.innerHTML += "<h3>Name: " + data[i].name + "</h3>";
+            div.innerHTML += "<h3>Description: " + data[i].description + "</h3>";
+            div.innerHTML += "<h3>Full name: " + data[i].fullname + "</h3>";
+            div.innerHTML += "<h3>Loginname " + data[i].loginname + "</h3>";
+            div.innerHTML += "<h3>Item: " + data[i].item_id + "</h3>";
+            div.innerHTML += "<h3>Item name: " + data[i].item_name + "</h3>";
+
+			var editbtn = document.createElement("button");
+			editbtn.innerHTML = "Edit list";
+			div.appendChild(editbtn);
+
+			editbtn.onclick = function(){
+			window.location.href = "createlist_item.html";
+			}
+
+            var hr = document.createElement("hr");
+            cont.appendChild(div);
+            cont.appendChild(hr);
+        }
+    }
+
+    //error ----------------------------------------
+    function error(err) {
+        console.log(err);
+    }
+
+    function refreshList() {
+
+        var token = JSON.parse(localStorage.getItem("logindata")).token;
+        //var url = "http://localhost:3000/TheToDoer/lists/?token=" + token;
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/lists/?token=" + token;
+        superfetch(url, "json", succ, error);
+    }
+
+    function editclick (evt) {
+        var listeid = evt.currentTarget.id;
+
+        //lagre i localstorage
+        localStorage.setItem("listeid", listeid);
+    }
+
+	signout.onclick = function () {
+		localStorage.clear();
+		window.location.href ="goodbye.html";
+	}
+
+</script>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>createlist</title>
+    <script src="superfetch2.js"></script>
+</head>
+
+<body>
+
+    <ul>
+     <li><a active="active"  href="createlist.html">Create list</a></li>
+     <li><a href="createlist_item.html">List items</a></li>
+     <li><a href="login.html">Login</a></li>
+     <li><a href="showlists.html">Show lists</a></li>
+    </ul>
+
+    <input id="inpname" placeholder="Create a list name">
+    <input id="inpdescription" placeholder="Describe list">
+    <br><br>
+    <button id="btnCreatelist">Add new list</button>
+</body>
+
+<style>
+    input, button{
+        width: 100%;
+        margin-bottom: 8px;
+        height: 40px;
+        font-size: 1em;
+        font-family: sans-serif;
+    }
+</style>
+
+<script>
+
+    var inpname = document.getElementById("inpname");
+    var inpdescription = document.getElementById("inpdescription");
+    var btnCreatelist = document.getElementById("btnCreatelist");
+
+    //button click create list -----------------------
+    btnCreatelist.onclick = function() {
+
+        if (inpname.value == "" || inpdescription.value == "") {
+            //skriv ut beskjed
+            return;
+        }
+
+        var upload = JSON.stringify({
+          name: inpname.value,
+          description: inpdescription.value
+        });
+
+        if (localStorage.getItem("logindata")) {
+
+            var token = JSON.parse(localStorage.getItem("logindata")).token;
+            //var url = "http://localhost:3000/TheToDoer/lists/?token=" + token;
+			var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/lists/?token=" + token;
+            var cfg = {
+                method: "POST",
+                body: upload
+            }
+            superfetch(url, "json", succ, error, cfg);
+        }
+
+        else {
+            //gi beskjed om ikke gyldig token
+        }
+    }
+
+    //success --------------------------------------
+    function succ(data) {
+        localStorage.setItem("listeid", data.newrow[0].list_id);
+        window.location.href = "createlist_item.html";
+    }
+
+    //error ----------------------------------------
+    function error(err) {
+        console.log(err);
+    }
+
+</script>
+
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>userlogin</title>
+    <script src="superfetch2.js"></script>
+</head>
+
+<body>
+
+  <ul>
+    <li><a href="createlist.html">Create list</a></li>
+    <li><a href="createlist_item.html">List items</a></li>
+    <li><a active="active"  href="login.html">Login</a></li>
+    <li><a href="showlists.html">Show lists</a></li>
+  </ul>
+
+  <input id="inpLoginname" placeholder="Username">
+  <input id="inpPassword" type = "password" placeholder="Password">
+  <br><br>
+  <button id="btnLogin">Login user</button>
+  <button id="newuser">New user</button>
+</body>
+
+<style>
+    input, button{
+        width: 100%;
+        margin-bottom: 8px;
+        height: 40px;
+        font-size: 1em;
+        font-family: sans-serif;
+    }
+</style>
+
+<script>
+
+    var inpLoginname = document.getElementById("inpLoginname");
+    var inpPassword = document.getElementById("inpPassword");
+    var btnLogin = document.getElementById("btnLogin");
+    var newuser = document.getElementById("newuser");
+
+    //button click ---------------------------
+    btnLogin.onclick = function() {
+
+        var upload = JSON.stringify({
+          	loginname: inpLoginname.value,
+          	password: inpPassword.value
+        });
+
+		console.log(upload);
+
+        //var url = "http://localhost:3000/TheToDoer/users/auth/";
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/users/auth/";
+        var cfg = {
+            method: "POST",
+            body: upload
+        }
+
+        superfetch(url, "json", succ, error, cfg);
+    }
+
+    // New user button-----------------------------
+    newuser.onclick = function() {
+        window.location.href = "createuser.html";
+    }
+
+    //success --------------------------------------
+    function succ(data) {
+            //save logindata/token to localStorage
+            localStorage.setItem("logindata", JSON.stringify(data));
+            console.log(data);
+			window.location.href = "showlists.html";
+    }
+
+    //error ----------------------------------------
+    function error(err) {
+        console.log(err);
+    }
+
+</script>
+
+</html>

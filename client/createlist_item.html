@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>List items</title>
+    <script src="superfetch2.js"></script>
+</head>
+
+<body>
+
+    <ul>
+     <li><a href="createlist.html">Create list</a></li>
+     <li><a active="active"  href="createlist_item.html">List items</a></li>
+     <li><a href="login.html">Login</a></li>
+     <li><a href="showlists.html">Show lists</a></li>
+    </ul>
+
+    <h3>Choose list</h3>
+    <select id = "dropdown"></select>
+    <input id = "items" placeholder="Add list item">
+    <button id = "btnadditem">Add list item</button>
+    <button id ="btndelete">Delete item</button>
+    <button id = "btnlogin">Login / New user</button>
+    <div id= "cont"></div>
+</body>
+
+<style>
+    select, input, button {
+        width: 100%;
+        margin-bottom: 8px;
+        height: 40px;
+        font-size: 1em;
+        font-family: sans-serif;
+    }
+</style>
+
+<script>
+
+    var dropdown = document.getElementById("dropdown");
+    var items = document.getElementById("items");
+    var btnadditem = document.getElementById("btnadditem");
+    var btndelete = document.getElementById("btndelete");
+    var btnlogin = document.getElementById("btnlogin");
+    var cont = document.getElementById("cont");
+    var logindata = JSON.parse(localStorage.getItem("logindata"));
+    var token = JSON.parse(localStorage.getItem("logindata")).token;
+
+    filldropdown();
+
+    // dropdown ------------------------------------
+    function filldropdown() {
+        var listlength = document.getElementById("dropdown").length;
+        console.log(listlength);
+
+        //var url = "http://localhost:3000/TheToDoer/lists/?token=" + token;
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/lists/?token=" + token
+        superfetch(url, "json", function(data) {
+
+            for (var i = 0; i < data.length; i++) {
+
+                var option = document.createElement("option");
+                option.value = data[i].list_id;
+
+                option.innerHTML = data[i].name;
+                dropdown.appendChild(option);
+
+            }
+
+            fill_listitems();
+
+        }, function(err) {
+
+            console.log(err);
+           });
+    }
+
+    //fill items to list------------------------
+    function fill_listitems() {
+
+		cont.innerHTML = "";
+
+        var listlength = document.getElementById("cont").length;
+        var listid = dropdown.value;
+        //var url = "http://localhost:3000/TheToDoer/listitems/?token=" + token + "&listid=" + listid;
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/listitems/?token=" + token + "&listid=" + listid;
+        superfetch(url, "json", function(data) {
+
+            console.log(data)
+
+            for (var i = 0; i < data.length; i++) {
+
+				var h3 = document.createElement("h3");
+				h3.innerHTML = data[i].item_name;
+				cont.appendChild(h3);
+        	}
+
+        }, function(err) {
+           	console.log(err);
+           });
+    }
+
+    dropdown.onchange = function(){
+        cont.innerHTML = "";
+        fill_listitems();
+    }
+
+    //btnclick add item ---------------------------
+    btnadditem.onclick = function() {
+
+        if (items.value == "") {
+            //skriv ut beskjed
+            return;
+        }
+
+        var upload = JSON.stringify({
+          title: items.value,
+          listid: dropdown.value
+        });
+
+        //var url = "http://localhost:3000/TheToDoer/listitems/?token=" + token;
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/listitems/?token=" + token;
+
+        console.log(url);
+
+        var cfg = {
+            method: "POST",
+            body: upload
+        }
+
+        superfetch(url, "json", succ, error, cfg);
+    }
+
+    //btnclick delete item------------------------------
+
+    	//Her skal kode for å slette items
+
+
+    //btnclick login/new user ---------------------------
+    btnlogin.onclick = function() {
+
+
+        if (cont.innerHTML === "") {
+            //skriv ut beskjed
+            return;
+        }
+
+        var upload = JSON.stringify({
+          title: items.value,
+          listid: dropdown.value
+        });
+
+        //var url = "http://localhost:3000/TheToDoer/listitems/?token=" + token;
+		var url = "https://thetodoerellenlena.herokuapp.com/TheToDoer/listitems/?token=" + token;
+
+        console.log(url);
+
+        var cfg = {
+            method: "POST",
+            body: upload
+        }
+
+        superfetch(url, "json", succ, error, cfg);
+
+        window.location.href = "login.html";
+    }
+
+    //success --------------------------------------
+     function succ(data) {
+		 fill_listitems();
+    }
+
+    //error ----------------------------------------
+    function error(err) {
+        console.log(err);
+    }
+</script>
+
+</html>
